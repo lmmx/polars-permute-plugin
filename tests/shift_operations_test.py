@@ -27,5 +27,5 @@ def test_shift_operations():
         {
             "a": 1,
             "b": 2,
-        }
+        },
     ], "multiple shift data integrity failed"

@@ -21,5 +21,5 @@ def test_chained_operations():
         {
             "d": 4,
             "a": 1,
-        }
+        },
     ], "chained operations data integrity failed"

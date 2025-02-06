@@ -4,7 +4,7 @@ import polars as pl
 def test_data_integrity():
     """Test that data values remain correct after permutations"""
     df = pl.DataFrame(
-        {"a": [1, 2, 3], "b": [4, 5, 6], "c": [7, 8, 9], "d": [10, 11, 12]}
+        {"a": [1, 2, 3], "b": [4, 5, 6], "c": [7, 8, 9], "d": [10, 11, 12]},
     )
 
     result = df.permute.shift("a", "b", steps=1, direction="right")

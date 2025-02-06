@@ -17,7 +17,7 @@ def test_multiple_columns():
         {
             "c": 3,
             "d": 4,
-        }
+        },
     ], "multiple prepend data integrity failed"
 
     # Test appending multiple columns
@@ -32,5 +32,5 @@ def test_multiple_columns():
         {
             "a": 1,
             "b": 2,
-        }
+        },
     ], "multiple append data integrity failed"

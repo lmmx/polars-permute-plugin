@@ -1,4 +1,6 @@
-from typing import List, Literal, Union
+from __future__ import annotations
+
+from typing import Literal
 
 import polars as pl
 from polars.api import register_dataframe_namespace
@@ -14,8 +16,9 @@ class PermutePlugin:
         return self._df.columns
 
     def _normalize_columns(
-        self, cols: Union[str, List[str], pl.Expr, List[pl.Expr]]
-    ) -> List[str]:
+        self,
+        cols: str | list[str] | pl.Expr | list[pl.Expr],
+    ) -> list[str]:
         """Helper to convert various column specifications to a list of column names."""
         if isinstance(cols, (str, pl.Expr)):
             cols = [cols]
@@ -30,13 +33,14 @@ class PermutePlugin:
                     move_col_names.append(name)
                 else:
                     raise ValueError(
-                        f"Cannot extract a column name from the expression: {col}"
+                        f"Cannot extract a column name from the expression: {col}",
                     )
 
         return move_col_names
 
     def prepend(
-        self, cols: Union[str, List[str], pl.Expr, List[pl.Expr]]
+        self,
+        cols: str | list[str] | pl.Expr | list[pl.Expr],
     ) -> pl.DataFrame:
         """Move the specified column(s) to the start (index 0)."""
         all_cols = list(self.columns)
@@ -54,7 +58,8 @@ class PermutePlugin:
         return self._df.select(all_cols)
 
     def append(
-        self, cols: Union[str, List[str], pl.Expr, List[pl.Expr]]
+        self,
+        cols: str | list[str] | pl.Expr | list[pl.Expr],
     ) -> pl.DataFrame:
         """Move the specified column(s) to the end."""
         all_cols = list(self.columns)
@@ -72,7 +77,9 @@ class PermutePlugin:
         return self._df.select(all_cols)
 
     def at(
-        self, cols: Union[str, List[str], pl.Expr, List[pl.Expr]], index: int
+        self,
+        cols: str | list[str] | pl.Expr | list[pl.Expr],
+        index: int,
     ) -> pl.DataFrame:
         """Move the specified column(s) to the exact position 'index'."""
         all_cols = list(self.columns)
@@ -96,7 +103,7 @@ class PermutePlugin:
 
     def shift(
         self,
-        *col_names: Union[str, pl.Expr],
+        *col_names: str | pl.Expr,
         steps: int = 1,
         direction: Literal["left", "right"] = "left",
     ) -> pl.DataFrame:
@@ -139,7 +146,9 @@ class PermutePlugin:
         return self._df.select(all_cols)
 
     def swap(
-        self, col1: Union[str, pl.Expr], col2: Union[str, pl.Expr]
+        self,
+        col1: str | pl.Expr,
+        col2: str | pl.Expr,
     ) -> pl.DataFrame:
         """Swap exactly two columns in place."""
         col1_name = self._normalize_columns(col1)[0]
