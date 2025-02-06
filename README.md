@@ -1,18 +1,28 @@
 # Polars Permute Plugin
 
-A Polars plugin for easily reordering DataFrame columns. Supports column permutations like prepending, appending, shifting, and swapping while preserving data integrity.
+A Polars plugin for easily reordering DataFrame columns.
+
+Supports column permutations like prepending, appending, shifting, and swapping.
 
 ## Installation
 
 ```python
-pip install polars
+pip install polars-permute[polars]
 ```
 
-Copy the `polars_permute.py` file into your project and import it:
+On older CPUs run:
 
 ```python
-import polars_permute
+pip install polars-permute[polars-lts-cpu]
 ```
+
+## Features
+
+- Supports both string column names and Polars expressions
+- Handles single or multiple columns
+- Maintains relative ordering of moved columns
+- Chain operations together
+- Gracefully handles edge cases (non-existent columns, empty inputs)
 
 ## Usage
 
@@ -45,15 +55,6 @@ df.permute.shift("a", "b", steps=1, direction="right")
 # Swap two columns
 df.permute.swap("a", "d")
 ```
-
-## Features
-
-- Preserves data integrity during permutations
-- Supports both string column names and Polars expressions
-- Handles single or multiple columns
-- Maintains relative ordering of moved columns
-- Chain operations together
-- Gracefully handles edge cases (non-existent columns, empty inputs)
 
 ## API Reference
 
@@ -98,7 +99,6 @@ df.permute.swap("a", "d")
 - Column order is preserved for multiple column operations
 - Invalid columns are ignored gracefully
 - Out-of-bounds indexes are clamped to valid range
-- Works with both string column names and Polars expressions
 
 ## Contributing
 
