@@ -1,0 +1,109 @@
+# Polars Permute Plugin
+
+A Polars plugin for easily reordering DataFrame columns. Supports column permutations like prepending, appending, shifting, and swapping while preserving data integrity.
+
+## Installation
+
+```python
+pip install polars
+```
+
+Copy the `polars_permute.py` file into your project and import it:
+
+```python
+import polars_permute
+```
+
+## Usage
+
+The plugin adds a `permute` namespace to Polars DataFrames with methods for column reordering:
+
+```python
+import polars as pl
+import polars_permute
+
+# Create a sample DataFrame
+df = pl.DataFrame({
+    "a": [1, 2, 3],
+    "b": [4, 5, 6],
+    "c": [7, 8, 9],
+    "d": [10, 11, 12]
+})
+
+# Move column 'd' to the start
+df.permute.prepend("d")
+
+# Move multiple columns to the end
+df.permute.append(["a", "b"])
+
+# Move columns to a specific position
+df.permute.at(["b", "c"], index=0)
+
+# Shift columns left/right
+df.permute.shift("a", "b", steps=1, direction="right")
+
+# Swap two columns
+df.permute.swap("a", "d")
+```
+
+## Features
+
+- Preserves data integrity during permutations
+- Supports both string column names and Polars expressions
+- Handles single or multiple columns
+- Maintains relative ordering of moved columns
+- Chain operations together
+- Gracefully handles edge cases (non-existent columns, empty inputs)
+
+## API Reference
+
+### prepend(cols)
+Move specified column(s) to the start (index 0).
+```python
+df.permute.prepend("d")  # Single column
+df.permute.prepend(["c", "d"])  # Multiple columns
+df.permute.prepend(pl.col("a").alias("x"))  # Using expressions
+```
+
+### append(cols)
+Move specified column(s) to the end.
+```python
+df.permute.append("a")
+df.permute.append(["a", "b"])
+```
+
+### at(cols, index)
+Move specified column(s) to exact position.
+```python
+df.permute.at("d", 1)  # Move 'd' to index 1
+df.permute.at(["b", "c"], 0)  # Move multiple columns
+```
+
+### shift(cols, steps=1, direction="left")
+Shift column(s) left or right by steps.
+```python
+df.permute.shift("c", steps=1, direction="left")
+df.permute.shift("a", "b", steps=2, direction="right")
+```
+
+### swap(col1, col2)
+Swap positions of two columns.
+```python
+df.permute.swap("a", "d")
+```
+
+## Notes
+
+- Operations create a new DataFrame; the original is not modified
+- Column order is preserved for multiple column operations
+- Invalid columns are ignored gracefully
+- Out-of-bounds indexes are clamped to valid range
+- Works with both string column names and Polars expressions
+
+## Contributing
+
+Feel free to open issues or submit pull requests for improvements or bug fixes.
+
+## License
+
+MIT License
