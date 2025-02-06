@@ -24,3 +24,7 @@ dev = [
   "pre-commit>=4.1.0",
   "pytest>=8.3.4"
 ]
+
+[project.urls]
+Homepage = "https://github.com/lmmx/polars-permute-plugin"
+Repository = "https://github.com/lmmx/polars-permute-plugin.git"
