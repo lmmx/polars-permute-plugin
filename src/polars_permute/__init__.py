@@ -163,3 +163,19 @@ class PermutePlugin:
             i1, i2 = all_cols.index(col1_name), all_cols.index(col2_name)
             all_cols[i1], all_cols[i2] = all_cols[i2], all_cols[i1]
         return self._df.select(all_cols)
+
+    def move(
+        self,
+        col_to_pivot: str,
+        cols_to_move: list[str],
+        where: Literal["before", "after"] = "after",
+    ) -> pl.DataFrame:
+        """Move a column before or after another column"""
+        assert set([col_to_pivot] + cols_to_move).issubset(set(self._df.columns))
+        new_cols = [c for c in self._df.columns if c not in cols_to_move]
+        ix = new_cols.index(col_to_pivot)
+        if where == "after":
+            new_cols = new_cols[: ix + 1] + cols_to_move + new_cols[ix + 1 :]
+        else:
+            new_cols = new_cols[:ix] + cols_to_move + new_cols[ix:]
+        return self._df.select(pl.col(new_cols))
