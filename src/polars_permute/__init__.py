@@ -164,18 +164,68 @@ class PermutePlugin:
             all_cols[i1], all_cols[i2] = all_cols[i2], all_cols[i1]
         return self._df.select(all_cols)
 
-    def move(
+    def before(
         self,
-        col_to_pivot: str,
-        cols_to_move: list[str],
-        where: Literal["before", "after"] = "after",
+        cols: str | list[str],  # | pl.Expr | list[pl.Expr],  # TODO: Expression support
+        reference: str,  # | pl.Expr,  # TODO: Expression support
     ) -> pl.DataFrame:
-        """Move a column before or after another column"""
-        assert set([col_to_pivot] + cols_to_move).issubset(set(self._df.columns))
-        new_cols = [c for c in self._df.columns if c not in cols_to_move]
-        ix = new_cols.index(col_to_pivot)
-        if where == "after":
-            new_cols = new_cols[: ix + 1] + cols_to_move + new_cols[ix + 1 :]
-        else:
-            new_cols = new_cols[:ix] + cols_to_move + new_cols[ix:]
-        return self._df.select(pl.col(new_cols))
+        """Move specified column(s) before a reference column."""
+        all_cols = list(self.columns)
+        move_cols = self._normalize_columns(cols)
+        ref_col = self._normalize_columns(reference)[0]
+
+        all_cols_set = set(all_cols)
+
+        # Validate reference column exists
+        if ref_col not in all_cols_set:
+            return self._df
+
+        # Gather columns to move in their original order
+        block = []
+        for c in move_cols:
+            if c in all_cols_set and c != ref_col:
+                idx = all_cols.index(c)
+                block.append(all_cols.pop(idx))
+
+        if not block:
+            return self._df
+
+        # Find reference position and insert before it
+        ref_idx = all_cols.index(ref_col)
+        for i, col_name in enumerate(block):
+            all_cols.insert(ref_idx + i, col_name)
+
+        return self._df.select(all_cols)
+
+    def after(
+        self,
+        cols: str | list[str],  # | pl.Expr | list[pl.Expr],  # TODO: Expression support
+        reference: str,  # | pl.Expr,  # TODO: Expression support
+    ) -> pl.DataFrame:
+        """Move specified column(s) after a reference column."""
+        all_cols = list(self.columns)
+        move_cols = self._normalize_columns(cols)
+        ref_col = self._normalize_columns(reference)[0]
+
+        all_cols_set = set(all_cols)
+
+        # Validate reference column exists
+        if ref_col not in all_cols_set:
+            return self._df
+
+        # Gather columns to move in their original order
+        block = []
+        for c in move_cols:
+            if c in all_cols_set and c != ref_col:
+                idx = all_cols.index(c)
+                block.append(all_cols.pop(idx))
+
+        if not block:
+            return self._df
+
+        # Find reference position and insert after it
+        ref_idx = all_cols.index(ref_col)
+        for i, col_name in enumerate(block):
+            all_cols.insert(ref_idx + 1 + i, col_name)
+
+        return self._df.select(all_cols)
