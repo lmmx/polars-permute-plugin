@@ -54,6 +54,10 @@ df.permute.shift("a", "b", steps=1, direction="right")
 
 # Swap two columns
 df.permute.swap("a", "d")
+
+# Move columns before or after another column
+df.permute.before("d", "b")  # Move 'd' before 'b'
+df.permute.after(["a", "b"], "c")  # Move 'a' and 'b' after 'c'
 ```
 
 ## API Reference
@@ -91,6 +95,20 @@ df.permute.shift("a", "b", steps=2, direction="right")
 Swap positions of two columns.
 ```python
 df.permute.swap("a", "d")
+```
+
+### before(cols, reference)
+Move specified column(s) before a reference column.
+```python
+df.permute.before("d", "b")  # Move 'd' before 'b'
+df.permute.before(["c", "d"], "a")  # Move multiple columns before 'a'
+```
+
+### after(cols, reference)
+Move specified column(s) after a reference column.
+```python
+df.permute.after("a", "c")  # Move 'a' after 'c'
+df.permute.after(["a", "b"], "d")  # Move multiple columns after 'd'
 ```
 
 ## Notes
