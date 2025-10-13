@@ -164,68 +164,54 @@ class PermutePlugin:
             all_cols[i1], all_cols[i2] = all_cols[i2], all_cols[i1]
         return self._df.select(all_cols)
 
-    def before(
-        self,
-        cols: str | list[str],  # | pl.Expr | list[pl.Expr],  # TODO: Expression support
-        reference: str,  # | pl.Expr,  # TODO: Expression support
-    ) -> pl.DataFrame:
-        """Move specified column(s) before a reference column."""
-        all_cols = list(self.columns)
-        move_cols = self._normalize_columns(cols)
-        ref_col = self._normalize_columns(reference)[0]
+    def _inject_column_position_methods():
+        """Provide shared implementations for column reordering operations."""
 
-        all_cols_set = set(all_cols)
+        def _move_columns(self, cols, reference, *, after: bool) -> pl.DataFrame:
+            all_cols = list(self.columns)
+            move_cols = self._normalize_columns(cols)
+            ref_col = self._normalize_columns(reference)[0]
+            all_cols_set = set(all_cols)
 
-        # Validate reference column exists
-        if ref_col not in all_cols_set:
-            return self._df
+            if ref_col not in all_cols_set:
+                return self._df
 
-        # Gather columns to move in their original order
-        block = []
-        for c in move_cols:
-            if c in all_cols_set and c != ref_col:
-                idx = all_cols.index(c)
-                block.append(all_cols.pop(idx))
+            # Gather columns to move in their original order
+            block = []
+            for c in move_cols:
+                if c in all_cols_set and c != ref_col:
+                    idx = all_cols.index(c)
+                    block.append(all_cols.pop(idx))
 
-        if not block:
-            return self._df
+            if not block:
+                return self._df
 
-        # Find reference position and insert before it
-        ref_idx = all_cols.index(ref_col)
-        for i, col_name in enumerate(block):
-            all_cols.insert(ref_idx + i, col_name)
+            # Find reference position and insert before/after
+            ref_idx = all_cols.index(ref_col)
+            offset = 1 if after else 0
+            for i, col_name in enumerate(block):
+                all_cols.insert(ref_idx + offset + i, col_name)
 
-        return self._df.select(all_cols)
+            return self._df.select(all_cols)
 
-    def after(
-        self,
-        cols: str | list[str],  # | pl.Expr | list[pl.Expr],  # TODO: Expression support
-        reference: str,  # | pl.Expr,  # TODO: Expression support
-    ) -> pl.DataFrame:
-        """Move specified column(s) after a reference column."""
-        all_cols = list(self.columns)
-        move_cols = self._normalize_columns(cols)
-        ref_col = self._normalize_columns(reference)[0]
+        def before(
+            self,
+            cols: str
+            | list[str],  # | pl.Expr | list[pl.Expr],  # TODO: Expression support
+            reference: str,  # | pl.Expr,  # TODO: Expression support
+        ) -> pl.DataFrame:
+            """Move specified column(s) before a reference column."""
+            return _move_columns(self, cols, reference, after=False)
 
-        all_cols_set = set(all_cols)
+        def after(
+            self,
+            cols: str
+            | list[str],  # | pl.Expr | list[pl.Expr],  # TODO: Expression support
+            reference: str,  # | pl.Expr,  # TODO: Expression support
+        ) -> pl.DataFrame:
+            """Move specified column(s) after a reference column."""
+            return _move_columns(self, cols, reference, after=True)
 
-        # Validate reference column exists
-        if ref_col not in all_cols_set:
-            return self._df
+        return before, after
 
-        # Gather columns to move in their original order
-        block = []
-        for c in move_cols:
-            if c in all_cols_set and c != ref_col:
-                idx = all_cols.index(c)
-                block.append(all_cols.pop(idx))
-
-        if not block:
-            return self._df
-
-        # Find reference position and insert after it
-        ref_idx = all_cols.index(ref_col)
-        for i, col_name in enumerate(block):
-            all_cols.insert(ref_idx + 1 + i, col_name)
-
-        return self._df.select(all_cols)
+    before, after = _inject_column_position_methods()
