@@ -12,7 +12,7 @@ version = "0.1.4"
 description = "A Polars plugin for easily reordering DataFrame columns"
 readme = "README.md"
 authors = [{name = "Louis Maddox", email = "louismmx@gmail.com"}]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = []
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -23,7 +23,6 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
