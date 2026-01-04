@@ -4,7 +4,7 @@ from typing import Literal
 
 import polars as pl
 from polars.api import register_dataframe_namespace
-
+from natsort import natsorted
 
 @register_dataframe_namespace("permute")
 class PermutePlugin:
@@ -163,7 +163,25 @@ class PermutePlugin:
             i1, i2 = all_cols.index(col1_name), all_cols.index(col2_name)
             all_cols[i1], all_cols[i2] = all_cols[i2], all_cols[i1]
         return self._df.select(all_cols)
+        
+    def sort(
+        self, reverse=False
+    ) -> pl.DataFrame:
+        """Sort columns alphabetically."""
+        # Source - https://stackoverflow.com/a/74040676
+        # Posted by braaannigan, modified by community. See post 'Timeline' for change history
+        # Retrieved 2026-01-04, License - CC BY-SA 4.0
+        return self._df.pipe(lambda tempDf: tempDf.select(sorted(tempDf.columns, reverse=reverse)))
 
+    def natsort(
+        self, reverse=False
+    ) -> pl.DataFrame:
+        """Sort columns alphabetically, using a natural sort algorithm."""
+        # Source - https://stackoverflow.com/a/74040676
+        # Posted by braaannigan, modified by community. See post 'Timeline' for change history
+        # Retrieved 2026-01-04, License - CC BY-SA 4.0
+        return self._df.pipe(lambda tempDf: tempDf.select(natsorted(tempDf.columns, reverse=reverse)))
+        
     def _inject_column_position_methods():
         """Provide shared implementations for column reordering operations."""
 
