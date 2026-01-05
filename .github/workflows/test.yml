@@ -40,7 +40,7 @@ jobs:
                 (.impl == "cpython") and
                 (.v.major == 3) and
                 (.v.minor >= $minv.minor) and
-                (.full != "3.15.0a2")
+                (.v.minor != 15)
               ))
             | map(select(.t != "freethreaded")) # Delete this line to include FT variants
             | map("\(.v.major).\(.v.minor)\(if .t=="freethreaded" then "t" else "" end)")')
