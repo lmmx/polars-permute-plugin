@@ -164,6 +164,33 @@ class PermutePlugin:
             all_cols[i1], all_cols[i2] = all_cols[i2], all_cols[i1]
         return self._df.select(all_cols)
 
+    def sort(
+        self,
+        *,
+        descending: bool = False,
+    ) -> pl.DataFrame:
+        """Sort columns lexicographically."""
+
+        all_cols = sorted(self.columns, reverse=descending)
+        return self._df.select(all_cols)
+
+    def natsort(
+        self,
+        *,
+        descending: bool = False,
+    ) -> pl.DataFrame:
+        """Sort columns using natural sort order (e.g., col2 < col10)."""
+
+        try:
+            from natsort import natsorted
+        except ImportError as e:
+            raise ImportError(
+                "natsort is required for natural sorting. Install with: pip install natsort"
+            ) from e
+
+        all_cols = natsorted(self.columns, reverse=descending)
+        return self._df.select(all_cols)
+
     def _inject_column_position_methods():
         """Provide shared implementations for column reordering operations."""
 

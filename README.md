@@ -58,6 +58,13 @@ df.permute.swap("a", "d")
 # Move columns before or after another column
 df.permute.before("d", "b")  # Move 'd' before 'b'
 df.permute.after(["a", "b"], "c")  # Move 'a' and 'b' after 'c'
+
+# Sort columns alphabetically
+df.permute.sort()
+df.permute.sort(descending=True)
+
+# Natural sort (requires: pip install polars-permute[natsort])
+df.permute.natsort()  # col1, col2, col10 (not col1, col10, col2)
 ```
 
 ## API Reference
@@ -109,6 +116,22 @@ Move specified column(s) after a reference column.
 ```python
 df.permute.after("a", "c")  # Move 'a' after 'c'
 df.permute.after(["a", "b"], "d")  # Move multiple columns after 'd'
+```
+
+### sort(descending=False)
+Sort columns lexicographically.
+```python
+df.permute.sort()
+df.permute.sort(descending=True)
+```
+
+### natsort(descending=False)
+
+Sort columns using natural sort order. Requires `natsort` extra.
+
+```python
+# pip install polars-permute[natsort]
+df.permute.natsort()  # ["col1", "col2", "col10"] not ["col1", "col10", "col2"]
 ```
 
 ## Notes
