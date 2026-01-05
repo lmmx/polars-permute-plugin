@@ -34,6 +34,7 @@ classifiers = [
 polars = ["polars>=1.21.0"]
 polars-lts-cpu = ["polars-lts-cpu>=1.21.0"]
 dev = ["pre-commit>=4.1.0", "pytest>=8.3.4"]
+natsort = ["natsort>=8.4.0"]
 
 [project.urls]
 Homepage = "https://github.com/lmmx/polars-permute-plugin"
