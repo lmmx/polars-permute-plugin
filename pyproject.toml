@@ -1,6 +1,6 @@
 [build-system]
-build-backend = "pdm.backend"
-requires = ["pdm-backend"]
+build-backend = "uv_build"
+requires = ["uv_build>=0.11.6,<0.12"]
 
 [dependency-groups]
 dev = ["pdbpp>=0.11.7", "polars>=1.32.0"]
@@ -41,4 +41,4 @@ Homepage = "https://github.com/lmmx/polars-permute-plugin"
 Repository = "https://github.com/lmmx/polars-permute-plugin.git"
 
 [tool.uv]
-default-groups = ["dev", "test"]
+default-groups = "all"
