@@ -33,12 +33,7 @@ import polars as pl
 import polars_permute
 
 # Create a sample DataFrame
-df = pl.DataFrame({
-    "a": [1, 2, 3],
-    "b": [4, 5, 6],
-    "c": [7, 8, 9],
-    "d": [10, 11, 12]
-})
+df = pl.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6], "c": [7, 8, 9], "d": [10, 11, 12]})
 
 # Move column 'd' to the start
 df.permute.prepend("d")
